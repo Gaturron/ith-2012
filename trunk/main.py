@@ -97,6 +97,13 @@ def writeCSV(CSVname, list):
             CSVfile.write('\n')
     CSVfile.close()
 
+def writeCSV1(CSVname, list):
+    CSVfile = open(CSVname, 'w')
+    for item in list:
+        CSVfile.write(str(item))
+        CSVfile.write('\n')
+    CSVfile.close()
+
 #=========================================================================
 
 def getSpeakers(): return listaDatos
@@ -108,7 +115,7 @@ def getGenreSpeakers(genre):
 
         assert (len(person) > 3), 'Cada persona debe tener una lista con 3 elementos'
 
-        if person[2] == genre:
+        if person[2].strip() == genre:
             speakers.append(person)
     return speakers
     
@@ -163,6 +170,46 @@ def averagePauseDurationForSpeakers(speakers):
                         duration = duration + (float(ipu[index][1]) - float(ipu[index][0]))
     assert (amount != 0), 'Sino div by zero'
     return duration / amount
+
+def getPauses(speaker):
+    pauses = []
+    for audio in ['1', '2']:
+        ipu = openIpu(speaker, audio)
+        if ipu != []:
+            assert (len(ipu) > 2), 'Para que range no falle'
+
+            for index in range(1, len(ipu)-1):
+                if (ipu[index-1][2] != '#') and (ipu[index][2] == '#') and (ipu[index+1][2] != '#'):
+                    #print ipu[index]
+                    duration = (float(ipu[index][1]) - float(ipu[index][0]))
+                    pauses.append(duration)
+    return pauses
+
+def getPausesForSpeakers(speakers):
+    list = []
+    for speaker in speakers:
+        list = list + getPauses(speaker)
+    return list
+
+def test2men():
+    list = []
+    for man in getMenSpeakers():
+        avg = averagePauseDuration(man, '1')
+        if(avg != -1): list.append([man[0], man[1]+'-1', 'm', str(avg)])
+        
+        avg = averagePauseDuration(man, '2')
+        if(avg != -1): list.append([man[0], man[1]+'-2', 'm', str(avg)])
+    return list
+
+def test2women():
+    list = []
+    for woman in getWomenSpeakers():  
+        avg = averagePauseDuration(woman,'1')
+        if(avg != -1): list.append([woman[0], woman[1]+'-1', 'f', str(avg)])
+        
+        avg = averagePauseDuration(woman, '2')
+        if(avg != -1): list.append([woman[0], woman[1]+'-2', 'f', str(avg)])
+    return list
 
 def test2a():
     list = []
@@ -263,11 +310,22 @@ def meansF0ReadSpeech():
 #=========================================================================
 loadCSVData()
 #Test1: Los hablantes de mayor edad suelen usar palabras de mayor longitud.
-csv = merge(listaDatos, getNumberPhonesList())
-print csv
-writeCSV('test1.csv', csv)
+#csv = merge(listaDatos, getNumberPhonesList())
+#print csv
+#writeCSV('test1.csv', csv)
 
 #Test2: Los hombres producen pausas (silencios entre segmentos de habla) más cortas que las mujeres.
+#promedio
+#men = test2men()
+#writeCSV('test2-menProm.csv', men)
+#women = test2women()
+#writeCSV('test2-womenProm.csv', women)
+
+#todas las pausas
+menPauses = getPausesForSpeakers(getMenSpeakers())
+writeCSV1('test2-menPauses.csv', menPauses)
+womenPauses = getPausesForSpeakers(getWomenSpeakers())
+writeCSV1('test2-womenPauses.csv', womenPauses)
 
 #Test3: El habla espontánea tiene un tono de voz más grave que el habla leída.
 
