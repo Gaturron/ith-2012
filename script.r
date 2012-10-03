@@ -1,14 +1,21 @@
 # Ejercicio 1
 # Los hablantes de mayor edad suelen usar palabras de mayor longitud.
-#gente <- read.table('test1.csv', sep=',', colClasses=c('character', 'character', 'character', 'integer', 'integer'), col.names=c('name','audio','sex', 'Edad', 'Cantidad.de.fonos'))
-#age <- gente[,"Edad"]
-#amount <- gente[,"Cantidad.de.fonos"]
-#plot(age, amount)
-#abline(lm(amount~age))
-#cor.test(age, amount)
+gente <- read.table('test1.csv', sep=',', colClasses=c('character', 'character', 'character', 'integer', 'integer'), col.names=c('name','audio','sex', 'Edad', 'Cantidad.de.fonos'))
+age <- gente[,"Edad"]
+amount <- gente[,"Cantidad.de.fonos"]
+
+jpeg('test1-plotCorr.jpg')
+plot(age, amount, main="Correlación entre edad y cantidad de fonos", xlab="Edad", ylab="Cantidad de fonos")
+abline(lm(amount~age))
+dev.off()
 # La linea debe crecer de la punta izquierda abajo hasta la derecha arriba
 # para que de correlacion deberia esta igual a la q mostramos
-#boxplot(age)
+
+cor.test(age, amount)
+
+jpeg('test1-boxplotAge.jpg')
+boxplot(age, main="Edades", xlab="", ylab="Valores")
+dev.off()
 
 # Ejercicio 2
 # Los hombres producen pausas (silencios entre segmentos de habla) más cortas que las mujeres.
@@ -82,8 +89,14 @@ t.test(menPauses, womenPauses, alternative='greater')
 # o sea las mujeres producen pausas mas cortas que los hombres
 
 # Ver si se puede hacer boxplot de las pausas, pero creo que no
-# allPausesProm <- append(as.data.frame(promWomen),as.data.frame(promMen))
-# boxplot(allPausesProm)
+jpeg('test2-boxplotsAllPausesProm.jpg')
+#colnames(promMen) <- c('Hombres')
+#colnames(promWomen) <- c('Promedio de pausas Mujeres')
+Hombres <- promMen
+Mujeres <- promWomen
+allPausesProm <- append(as.data.frame(Mujeres),as.data.frame(Hombres))
+boxplot(allPausesProm, main="Promedio de duración de una pausa entre sexo", xlab="Muestras", ylab="Duración")
+dev.off()
 
 # Ejercicio 3
 # El habla espontánea tiene un tono de voz más grave que el habla leída. 
@@ -142,7 +155,7 @@ t.test(meansF0SS$V1, meansF0RS$V1, paired=TRUE, alternative='greater')
 meansSimpleF0SS <- read.table('test3-meansSimpleF0SS.csv', sep=',')
 meansSimpleF0RS <- read.table('test3-meansSimpleF0RS.csv', sep=',')
 
-> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='less')
+t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='less')
 
 # 	Paired t-test
 
@@ -155,7 +168,7 @@ meansSimpleF0RS <- read.table('test3-meansSimpleF0RS.csv', sep=',')
 # mean of the differences 
 #                6.250525 
 
-> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='two.sided')
+t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='two.sided')
 
 # 	Paired t-test
 
@@ -168,7 +181,7 @@ meansSimpleF0RS <- read.table('test3-meansSimpleF0RS.csv', sep=',')
 # mean of the differences 
 #                6.250525 
 
-> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='greater')
+t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='greater')
 
 # 	Paired t-test
 
@@ -183,4 +196,10 @@ meansSimpleF0RS <- read.table('test3-meansSimpleF0RS.csv', sep=',')
 
 # Da todo igual, el promedio ponderado no agrego mucho
 
-
+# Grafico de F0
+colnames(meansF0SS) <- c('Habla espontánea')
+colnames(meansF0RS) <- c('Habla leída')
+allMeansF0 <-append(as.vector(meansF0SS), as.vector(meansF0RS))
+jpeg('test3-boxplotsMeansF0SSvsRS.jpg')
+boxplot(allMeansF0, main="Promedio ponderado de las muestras", xlab="Muestras", ylab="Frecuencia fundamental")
+dev.off()
