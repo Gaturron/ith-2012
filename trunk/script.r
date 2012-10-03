@@ -87,3 +87,100 @@ t.test(menPauses, womenPauses, alternative='greater')
 
 # Ejercicio 3
 # El habla espontánea tiene un tono de voz más grave que el habla leída. 
+# Se pasa a 
+#“El habla espontánea tiene un tono de voz con baja frecuencia fundamental comparando al habla leída.”
+
+# Version promedio ponderado
+meansF0SS <- read.table('test3-meansF0SS.csv', sep=',')
+meansF0RS <- read.table('test3-meansF0RS.csv', sep=',')
+# Hipotesis a probar: muF0SS < muF0RS
+t.test(meansF0SS$V1, meansF0RS$V1, paired=TRUE, alternative='less')
+# 	Paired t-test
+
+# data:  meansF0SS$V1 and meansF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.8442
+# alternative hypothesis: true difference in means is less than 0 
+# 95 percent confidence interval:
+#      -Inf 16.52119 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+# p-valor > 0.8442, entonce sno podemos rechazar Ho
+
+# Hipotesis a probar: muF0SS != muF0RS
+t.test(meansF0SS$V1, meansF0RS$V1, paired=TRUE, alternative='two.sided')
+# 	Paired t-test
+
+# data:  meansF0SS$V1 and meansF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.3115
+# alternative hypothesis: true difference in means is not equal to 0 
+# 95 percent confidence interval:
+#  -6.079399 18.580449 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+# p-valor alto, tampoco nos da estadisticamente significativo 
+
+# Hipotesis a probar: muF0SS > muF0RS
+t.test(meansF0SS$V1, meansF0RS$V1, paired=TRUE, alternative='greater')
+# 	Paired t-test
+
+# data:  meansF0SS$V1 and meansF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.1558
+# alternative hypothesis: true difference in means is greater than 0 
+# 95 percent confidence interval:
+#  -4.020141       Inf 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+# p-valor cercano a 0.15, parece cercano a un aproaching significance pero igual no alacanza ya que no es < 0.1
+
+# Version promedio simple: no ponderado
+meansSimpleF0SS <- read.table('test3-meansSimpleF0SS.csv', sep=',')
+meansSimpleF0RS <- read.table('test3-meansSimpleF0RS.csv', sep=',')
+
+> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='less')
+
+# 	Paired t-test
+
+# data:  meansSimpleF0SS$V1 and meansSimpleF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.8442
+# alternative hypothesis: true difference in means is less than 0 
+# 95 percent confidence interval:
+#      -Inf 16.52119 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='two.sided')
+
+# 	Paired t-test
+
+# data:  meansSimpleF0SS$V1 and meansSimpleF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.3115
+# alternative hypothesis: true difference in means is not equal to 0 
+# 95 percent confidence interval:
+#  -6.079399 18.580449 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+> t.test(meansSimpleF0SS$V1, meansSimpleF0RS$V1, paired=TRUE, alternative='greater')
+
+# 	Paired t-test
+
+# data:  meansSimpleF0SS$V1 and meansSimpleF0RS$V1 
+# t = 1.0254, df = 39, p-value = 0.1558
+# alternative hypothesis: true difference in means is greater than 0 
+# 95 percent confidence interval:
+#  -4.020141       Inf 
+# sample estimates:
+# mean of the differences 
+#                6.250525 
+
+# Da todo igual, el promedio ponderado no agrego mucho
+
+
