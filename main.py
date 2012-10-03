@@ -263,9 +263,47 @@ def meanF0Total(speaker, audio):
                         meanF0xSeg = meanF0Seg * duration
                         meanF0xSegTotal = meanF0xSegTotal + meanF0xSeg
 
-        assert (durationTotal != 0), 'Sino div by zero'
-        return meanF0xSegTotal / durationTotal
+                        assert (durationTotal != 0), 'Sino div by zero'
+                        return meanF0xSegTotal / durationTotal
+                #print 'No hay audio '+str(speaker[0])
+                return 0
     else:
+        #print 'no hay ipu'
+        return 0
+
+def meanSimpleF0Total(speaker, audio):
+    ipu = openIpu(speaker, audio)
+
+    meanF0xSegTotal = 0
+    SegTotal = 0
+    if ipu != []:
+        for line in ipu:
+            
+            assert ( len(line) > 2), 'line tiene que tener minimo 3 elementos'
+            
+            if line[2].strip() != "#":
+            
+                for filename in os.listdir(wavDir):
+                    if filename.title() == str(speaker[0])+"-"+str(speaker[1])+audio+".Wav":
+
+                        start = float(line[0])
+                        end = float(line[1])
+                        duration = end - start
+
+                        #print wavDir+filename+" "+str(start)+" "+str(end) 
+                        dicc = praat.run_praat(wavDir+filename, start, end, 75,500) 
+                        meanF0Seg = dicc['f0_mean'] 
+                        #print meanF0Seg
+
+                        SegTotal = SegTotal + 1
+                        meanF0xSegTotal = meanF0xSegTotal + meanF0Seg
+
+                        assert (SegTotal != 0), 'Sino div by zero'
+                        return meanF0xSegTotal / SegTotal
+                #print 'No hay audio '+str(speaker[0])
+                return 0
+    else:
+        #print 'no hay ipu'
         return 0
 
 def meanF0SpontaneousSpeech():
@@ -274,8 +312,9 @@ def meanF0SpontaneousSpeech():
     meanF0 = 0
     amount = 0
     for speaker in speakers:
-        meanF0 = meanF0 + meanF0Total(speaker, '1')
-        amount = amount + 1
+        if meanF0Total(speaker, '1') != 0:
+            meanF0 = meanF0 + meanF0Total(speaker, '1')
+            amount = amount + 1
     assert (amount != 0), 'Sino div by zero'
     return meanF0 / amount
 
@@ -285,8 +324,9 @@ def meanF0ReadSpeech():
     meanF0 = 0
     amount = 0
     for speaker in speakers:
-        meanF0 = meanF0 + meanF0Total(speaker, '2')
-        amount = amount + 1
+        if meanF0Total(speaker, '2') != 0:
+            meanF0 = meanF0 + meanF0Total(speaker, '2')
+            amount = amount + 1
     assert (amount != 0), 'Sino div by zero'
     return meanF0 / amount
 
@@ -295,7 +335,8 @@ def meansF0SpontaneousSpeech():
     
     res = []
     for speaker in speakers:
-        res.append([speaker, meanF0Total(speaker, '1')])
+        if meanF0Total(speaker, '1') > 0:
+            res.append([speaker, meanF0Total(speaker, '1')])
     return res
 
 def meansF0ReadSpeech():
@@ -303,9 +344,28 @@ def meansF0ReadSpeech():
     
     res = []
     for speaker in speakers:
-        res.append([speaker, meanF0Total(speaker, '2')])
+        if meanF0Total(speaker, '2') > 0:
+            res.append([speaker, meanF0Total(speaker, '2')])
     return res
 
+
+def meansSimpleF0SpontaneousSpeech():
+    speakers = getSpeakers()
+    
+    res = []
+    for speaker in speakers:
+        if meanF0Total(speaker, '1') > 0:
+            res.append([speaker, meanSimpleF0Total(speaker, '1')])
+    return res
+
+def meansSimpleF0ReadSpeech():
+    speakers = getSpeakers()
+    
+    res = []
+    for speaker in speakers:
+        if meanF0Total(speaker, '2') > 0:
+            res.append([speaker, meanSimpleF0Total(speaker, '2')])
+    return res
 
 #=========================================================================
 loadCSVData()
@@ -322,13 +382,40 @@ loadCSVData()
 #writeCSV('test2-womenProm.csv', women)
 
 #todas las pausas
-menPauses = getPausesForSpeakers(getMenSpeakers())
-writeCSV1('test2-menPauses.csv', menPauses)
-womenPauses = getPausesForSpeakers(getWomenSpeakers())
-writeCSV1('test2-womenPauses.csv', womenPauses)
+#menPauses = getPausesForSpeakers(getMenSpeakers())
+#writeCSV1('test2-menPauses.csv', menPauses)
+#womenPauses = getPausesForSpeakers(getWomenSpeakers())
+#writeCSV1('test2-womenPauses.csv', womenPauses)
 
 #Test3: El habla espontánea tiene un tono de voz más grave que el habla leída.
+#Promedio ponderado para el calculo del tono de voz
+# speaker, hablante
+ss = meansF0SpontaneousSpeech()
+print ss
+lss=[]
+for i in ss:
+    lss.append(i[1])
+writeCSV1('test3-meansF0SS.csv', lss)
 
-#print meanF0SpontaneousSpeech()
-#print meanF0ReadSpeech()
+rs = meansF0ReadSpeech()
+print rs
+lrs=[]
+for i in rs:
+    lrs.append(i[1])
+writeCSV1('test3-meansF0RS.csv', lrs)
+#Promedio simple a ver que pasa
+ss1 = meansSimpleF0SpontaneousSpeech()
+print ss1
+lss1=[]
+for i in ss1:
+    lss1.append(i[1])
+writeCSV1('test3-meansSimpleF0SS.csv', lss1)
 
+rs1 = meansSimpleF0ReadSpeech()
+print rs1
+lrs1=[]
+for i in rs1:
+    lrs1.append(i[1])
+writeCSV1('test3-meansSimpleF0RS.csv', lrs1)
+
+print str(ss1 == ss)
