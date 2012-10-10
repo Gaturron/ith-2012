@@ -1,34 +1,45 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-15 -*-
 
 import sys
 vocal = ['a', 'A']
-consonant = ['ḱ', 'l', 'm', 'p', 's']
+consonant = ['k', 'l', 'm', 'p', 's']
 
-def checkDiphones(str):
-    for i in range(0, len(str)):
+def checkDiphones(string):
+    for i in range(0, len(string)):
         if i % 2 == 0:
-            if not(str[i] in consonant):
-                print 'Mal input: '+str[0:i+1]
-        if i % 2 == 1:
-            if not(str[i] in vocal):
-                print 'Mal input: '+str[0:i+1]
+            if not(string[i] in consonant):
+                print 'Mal input: '+string[0:i+1]
+                return False
+        else:
+            if not(string[i] in vocal):
+                print 'Mal input: '+string[0:i+1]
+                return False
+    return True
 
-def getDiphones(str):
-    assert len(str) > 1, 'str debe ser mas largo'    
+def getDiphones(string):
+    assert len(string) > 1, 'str debe ser mas largo'    
     
     res = []
-    res.append('-'+str[0])
-    for i in range(1, len(str)):
-        res.append(str[i-1]+str[i])
-    res.append(str[len(str)-1]+'-')       
+    res.append('-'+string[0])
+    for i in range(1, len(string)):
+        res.append(string[i-1]+string[i])
+    res.append(string[len(string)-1]+'-')   
+    return res    
 
 if len(sys.argv) < 2:
     print 'Mal pasaje de parametros: debe pasar el codigo en ascii de lo que quiere sintetizar'
 else:
-    str = sys.argv[1]
-    print 'Parametro ingresado: '+str
+    string = sys.argv[1]
+    print 'Parametro ingresado: '+string
 
-    checkDiphones(str)
-    print getDiphones(str)
-    
+    if not checkDiphones(string):
+        print 'Mal los difonos ingresados'
+    else:
+        diphones = getDiphones(string)
+
+        for i in range(0, len(diphones)):
+            if i == 0:
+                print 'select Sound '+diphones[0]
+            else:
+                print 'plus Sound '+diphones[i]
+        print 'Concatenate recoverably'
