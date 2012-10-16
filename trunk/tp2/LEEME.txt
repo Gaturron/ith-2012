@@ -1,0 +1,20 @@
+Para ejecutar el sintetizador se lo debe correr por linea 
+de comandos de las siguiente forma:
+
+	python main.py [Palabra a sintetizar]
+
+Al correrlo nos genera el archivo .praat que se utiliza para 
+concatenar los difonos. Luego se ejecuta dicho archivo en 
+Praat y se genera el .wav de la palabra.
+
+Por ejemplo:
+"python main.py kamAsa" nos sintetiza esa palabra 
+
+Tambien se puede usar:
+
+	python main.py --help 			Mostrar este texto 
+
+Los difonos utilizados se encuentran en la carpeta "difonos". 
+Esta se puede setear al principio del script.
+
+Se utilizo Python 2.7 para generar el script.
