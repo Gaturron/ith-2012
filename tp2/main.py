@@ -6,7 +6,7 @@ import commands
 # Parametros globales para poder cambiar los difonos mas facil
 vocal = ['a', 'A']
 consonant = ['k', 'l', 'm', 'p', 's']
-diphones_dir = "difonos/base1/"
+diphones_dir = "difonos/base2/"
 
 # Chequea que el string pasado como parametro sea de la forma (CV)+
 # Si da error nos avisa en que parte del string nos equivocamos
