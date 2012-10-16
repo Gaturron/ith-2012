@@ -1,37 +1,49 @@
 #!/usr/bin/python
 
-import sys
-import commands
+import commands, sys, re
 
 # Parametros globales para poder cambiar los difonos mas facil
-vocal = ['a', 'A']
+diphones_dir = "difonos/base2v2/"
+vowel = ['a', 'A']
 consonant = ['k', 'l', 'm', 'p', 's']
-diphones_dir = "difonos/base2/"
 
 # Chequea que el string pasado como parametro sea de la forma (CV)+
 # Si da error nos avisa en que parte del string nos equivocamos
 def checkPhonemes(input):
-    for i in range(0, len(input)):
-        if i % 2 == 0:
-            if not(input[i] in consonant):
-                print 'Error procesando input: '+input[0:i+1]+' <----'
-                return False
-        else:
-            if not(input[i] in vocal):
-                print 'Error procesando input: '+input[0:i+1]+' <----'
-                return False
-    return True
+
+    # Funcion auxiliar para armar la exp. reg.
+    def concatStr(list):
+        string = ''
+        for item in list: 
+            string += str(item) 
+        return string
+
+    # Exp. regular del leguaje propuesto
+    pattern = "(^((["+str(concatStr(consonant))+"])(["+str(concatStr(vowel))+"]))+$)"
+    
+    # Si coinicide seguimos, sino buscamos donde fallo
+    if re.search(pattern, input):
+        return True
+    else: 
+        for i in range(0, len(input)):
+            if i % 2 == 0:
+                if not(input[i] in consonant):
+                    print 'Error procesando input: '+input[0:i+1]+' <---- se esperaba '+str(consonant)
+                    return False
+            else:
+                if not(input[i] in vowel):
+                    print 'Error procesando input: '+input[0:i+1]+' <---- se esperaba '+str(vowel)
+                    return False
 
 # Dado un string, te devuelve una lista con todos sus difonos
 # Ej: 'kamala' => ['-k', 'ka', 'am', 'ma', 'al', 'la', 'a-']
 def getDiphones(input):
     assert len(input) > 1, 'str debe ser mas largo'    
     
-    res = []
-    res.append('-'+input[0])
+    res = ['-'+input[0]]
     for i in range(1, len(input)):
-        res.append(input[i-1]+input[i])
-    res.append(input[len(input)-1]+'-')   
+        res += [input[i-1]+input[i]]
+    res += [input[len(input)-1]+'-']
     return res    
 
     #input2    = '-' + input + '-'
@@ -39,7 +51,7 @@ def getDiphones(input):
 
 # Dado un string, genera otro con todos los comandos de praat para contacenar los difonos
 def makePraatScript(input):
-    #obtenemos los difonos del input
+    # Obtenemos los difonos del input
     diphoneList = getDiphones(input)
 
     loadWavs = ''
@@ -52,8 +64,7 @@ def makePraatScript(input):
         concatWavs += 'plus Sound difono' + str(count) + '\n'
         count += 1
     
-    script = loadWavs 
-    script += concatWavs
+    script = loadWavs + concatWavs
     script += 'Concatenate recoverably\n'
     script += 'select Sound chain\n'
 
@@ -69,7 +80,7 @@ def makePraatFile(input, script):
 
 #Empieza el script
 if len(sys.argv) < 2:
-    print 'Mal pasaje de parametros: debe pasar el codigo en ascii de lo que quiere sintetizar'
+    print 'Mal pasaje de parametros: debe pasar el string de lo que quiere sintetizar'
 else:
     input = sys.argv[1]
 
@@ -85,6 +96,7 @@ else:
             print 'Mal los fonemas ingresados'
         else:
             print 'Sintetizando: '+input
+            print 'Tomando los difonos de: ./'+diphones_dir
 
             # Generamos los comandos para el script de Praat
             script = makePraatScript(input)
@@ -99,6 +111,6 @@ else:
             
             if status[0] == 0:
                 print 'Ok'
-                print 'Archivo '+ input + '.wav creado con el archivo sintetizado'
+                print 'Archivo '+ input + '.wav creado con el archivo sintetizador'
             else:
                 print 'Error ejecutando el script ' + input + '.praat, mensaje: ', status[1]     
