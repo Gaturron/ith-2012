@@ -18,10 +18,10 @@ item []:
             text = "" 
         intervals [2]:
             xmin = 0.9260384285015852 
-            xmax = 1.0256228048421436 
+            xmax = 1.0300444118586005 
             text = "ka" 
         intervals [3]:
-            xmin = 1.0256228048421436 
+            xmin = 1.0300444118586005 
             xmax = 2.6856126833608136 
             text = "" 
         intervals [4]:
@@ -30,10 +30,10 @@ item []:
             text = "la" 
         intervals [5]:
             xmin = 2.8048963360279306 
-            xmax = 4.2006764435414965 
+            xmax = 4.209842255532227 
             text = "" 
         intervals [6]:
-            xmin = 4.2006764435414965 
+            xmin = 4.209842255532227 
             xmax = 4.324320464350644 
             text = "ma" 
         intervals [7]:
