@@ -3,7 +3,7 @@
 import commands, sys, re
 
 # Parametros globales para poder cambiar los difonos mas facil
-diphones_dir = "difonos/base1/"
+diphones_dir = "difonos/difonosbase3/"
 vowel = ['a', 'A']
 consonant = ['k', 'l', 'm', 'p', 's']
 
@@ -45,9 +45,6 @@ def getDiphones(input):
         res += [input[i-1]+input[i]]
     res += [input[len(input)-1]+'-']
     return res    
-
-    #input2    = '-' + input + '-'
-    #return [input2[i:i+2] for i in range(len(input2) - 1)]
 
 # Dado un string, genera otro con todos los comandos de praat para contacenar los difonos
 def makePraatScript(input):
