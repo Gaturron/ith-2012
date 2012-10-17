@@ -3,7 +3,7 @@
 import commands, sys, re
 
 # Parametros globales para poder cambiar los difonos mas facil
-diphones_dir = "difonos/base2v2/"
+diphones_dir = "difonos/base1/"
 vowel = ['a', 'A']
 consonant = ['k', 'l', 'm', 'p', 's']
 
